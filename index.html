@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmartRoom | Live IoT</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=DM+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script></head>
+<body><aside class="side"><div class="logo">⌁ <b>SMART<span>ROOM</span></b><small>IoT CONTROL CENTER</small></div><p class="navlabel">WORKSPACE</p><a class="active">▦ &nbsp; Overview</a><a href="#sensors">⌁ &nbsp; Live sensors</a><a href="#alerts">◉ &nbsp; Alert history</a><a href="#analytics">⌁ &nbsp; Analytics</a><div class="sidebottom"><div class="conn"><i id="dot"></i><div><b id="connText">Disconnected</b><small>EMQX Cloud</small></div></div><button id="settingsBtn">⚙ Connection settings</button><small class="foot">SMARTROOM PROJECT · ESP32</small></div></aside>
+<main><header><div><small>YOUR SPACE / LIVE MONITORING</small><h1>Room overview <em>● LIVE</em></h1></div><div class="clock"><b id="clock">--:--:--</b><small>CHENNAI · IST</small></div></header>
+<section class="hero"><small>SMARTROOM / SYSTEM STATUS</small><h2>Your room, <span>under control.</span></h2><p>Monitor environmental conditions and manage room modes in real time.</p><div class="heroState"><small>DEVICE STATUS</small><b id="device">Waiting for ESP32</b><span id="last">No messages received yet</span></div></section>
+<div class="heading" id="sensors"><div><small>AT A GLANCE</small><h2>Environment snapshot</h2></div><span id="updated">Waiting for live data</span></div>
+<section class="metrics">
+<article><div class="top"><i class="ico orange">♨</i><small>SMOKE / MQ-2</small><label id="smokeBadge">WAITING</label></div><h3><span id="smoke">--</span> <small>ADC</small></h3><p id="smokeText">Waiting for sensor data</p><footer>Threshold <b id="smokeTh">600</b></footer></article>
+<article><div class="top"><i class="ico purple">⌖</i><small>INTRUSION / IR</small><label id="irBadge">WAITING</label></div><h3 id="ir">--</h3><p id="irText">Waiting for sensor data</p><footer>Monitoring <b id="irEnabled">—</b></footer></article>
+<article><div class="top"><i class="ico blue">☼</i><small>LIGHT / LDR</small><label id="ldrBadge">WAITING</label></div><h3><span id="ldr">--</span> <small>ADC</small></h3><p id="ldrText">Waiting for sensor data</p><footer>Threshold <b id="ldrTh">1500</b></footer></article>
+<article><div class="top"><i class="ico green">✦</i><small>ALERT LED</small><label id="ledBadge">WAITING</label></div><h3 id="led">--</h3><p id="ledText">Waiting for status</p><footer>Alert state <b id="alertState">Unknown</b></footer></article></section>
+<section class="cols"><article class="panel"><div class="heading"><div><small>ROOM AUTOMATION</small><h2>Choose a mode</h2></div><label class="modechip" id="modeChip">NORMAL</label></div><p class="desc">Select how SmartRoom should monitor your environment. Your ESP32 receives the command through MQTT.</p><div class="modes">
+<button class="mode selected" data-mode="normal"><i>⌂</i><span><b>Normal</b><small>Smoke monitoring only</small></span><strong>✓</strong></button>
+<button class="mode" data-mode="meeting"><i>◷</i><span><b>Meeting</b><small>Smoke + intrusion monitoring</small></span><strong>✓</strong></button>
+<button class="mode" data-mode="vacation"><i>↗</i><span><b>Vacation</b><small>Smoke + intrusion + evening light</small></span><strong>✓</strong></button></div><p class="note" id="modeNote">Normal mode keeps smoke monitoring active.</p><div class="modefoot"><span id="modeStatus">Connect to EMQX to send commands</span><button class="primary" id="applyMode" disabled>Apply mode ↗</button></div></article>
+<article class="panel"><small>DEVICE HEALTH</small><h2>Connection status</h2><div class="health"><span>ESP32 Wi-Fi</span><b id="wifi">Unknown</b></div><div class="health"><span>ESP32 MQTT</span><b id="mqtt">Unknown</b></div><div class="health"><span>Website broker</span><b id="web">Disconnected</b></div><div class="health"><span>Vacation time window</span><b id="timeWindow">Unknown</b></div><footer>Last sensor update <b id="sensorTime">—</b></footer></article></section>
+<div class="heading" id="alerts"><div><small>EVENT STREAM</small><h2>Recent alerts</h2></div><button class="clear" id="clear">Clear history ↗</button></div><section class="panel alertpanel"><div class="tablehead"><span>EVENT</span><span>SENSOR</span><span>MODE</span><span>VALUE</span><span>TIME</span><span>SEVERITY</span></div><div id="alertRows"><div class="empty"><b>No alerts yet</b><span>ESP32 alerts will appear here.</span></div></div></section>
+<div class="heading" id="analytics"><div><small>LIVE TELEMETRY</small><h2>Sensor activity</h2></div><span>Recent received readings</span></div><section class="panel chartpanel"><div class="legend"><span>🟠 MQ-2 smoke</span><span>🔵 LDR light</span><small>Raw ADC · 0–4095</small></div><canvas id="chart"></canvas><div class="empty" id="chartEmpty">Chart appears when live readings arrive.</div></section>
+<footer class="pagefoot">SMARTROOM · ESP32 + EMQX CLOUD <span>Live values only · No simulated readings</span></footer></main>
+<div class="overlay" id="modal"><div class="modal"><button class="x" id="close">×</button><small>MQTT CONNECTION</small><h2>Connect to your broker</h2><p>Enter your EMQX credentials. They are used in this browser session only and aren't saved in this page.</p><form id="form">
+<label>Broker host<input id="host" value="i25d8421.ala.eu-central-1.emqxsl.com" required></label><div class="row"><label>Secure WebSocket port<input id="port" value="8084" required></label><label>WebSocket path<input id="path" value="/mqtt" required></label></div>
+<label>EMQX username<input id="user" autocomplete="username" required placeholder="MQTT username"></label><label>EMQX password<input id="pass" type="password" autocomplete="current-password" required placeholder="MQTT password"></label><div class="security">🔒 Don't use permanent/admin credentials on a public website. Use restricted MQTT permissions.</div><button class="primary full">Connect to SmartRoom ↗</button></form><p class="error" id="error"></p></div></div><div class="alert-overlay" id="alertPopup" role="alertdialog" aria-live="assertive" aria-modal="true">
+<div class="alert-popup">
+  <div class="alert-popup-icon">⚠</div>
+  <div class="alert-popup-kicker">SMARTROOM · LIVE ALERT</div>
+  <button class="alert-popup-close" id="alertPopupClose" aria-label="Dismiss alert">×</button>
+  <h2 id="popupTitle">Alert detected!</h2>
+  <p id="popupMessage">A sensor has detected an event.</p>
+  <div class="popup-details" id="popupDetails"></div>
+  <button class="primary popup-ack" id="alertPopupAck">I’VE SEEN THIS</button>
+</div>
+</div>
+<div class="toast" id="toast"></div><script src="app.js"></script></body></html>
